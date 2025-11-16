@@ -1,6 +1,6 @@
 const { createRoom } = require("../controllers/room");
 
-const roomSocketHandler = (io, socket, userIdToSocketIdMap) => {
+const roomSocketHandler = (io, socket, userSockets) => {
     // Join a room
     socket.on('join-room', (roomId) => {
         socket.join(roomId);
@@ -21,11 +21,13 @@ const roomSocketHandler = (io, socket, userIdToSocketIdMap) => {
 
             // Notify members of the new room
             if (createdRoom.isPrivate) {
-                // For private rooms, only notify the members
+                // For private rooms, notify all sockets of the members
                 createdRoom.member.forEach(member => {
-                    const memberSocketId = userIdToSocketIdMap.get(member._id.toString());
-                    if (memberSocketId) {
-                        io.to(memberSocketId).emit("new-room", createdRoom);
+                    const memberSocketSet = userSockets.get(member._id.toString());
+                    if (memberSocketSet) {
+                        memberSocketSet.forEach(socketId => {
+                            io.to(socketId).emit("new-room", createdRoom);
+                        });
                     }
                 });
             } else {
