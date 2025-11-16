@@ -7,7 +7,7 @@ A full stack web chat application
 ## 1. Clone this project
 
 ```bash
-  git clone https://github.com/violin11909/webChat.git
+  git clone https://github.com/violin11909/KOMMUNIchat.git
 ```
 ## 2. Set up environment
 Create a new .env in the frontend
